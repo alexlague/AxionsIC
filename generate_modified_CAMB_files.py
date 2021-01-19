@@ -6,13 +6,15 @@
 
 import numpy as np
 from scipy.interpolate import interp1d
+import argparse
 
-# Parameters
+parser = argparse.ArgumentParser(description='Generate CAMB files for MUSIC for mixed axion ICs')
+parser.add_argument('input_file', metavar=filein, help='Input file name from axionCAMB e.g. 1e-27axions_transfer_out.dat')
+parser.add_argument('output_file', metavar=fileout, help='Output file root which leads to file names OUT_cdm.dat and OUT_axions.dat')
+args = parser.parse_args()
 
-f_ax = 0.1   # Omega_axions / Omega_DM between 0 and 1
-m_ax = 1e-27 # axion mass in eV/c^2
-z    = 50    # redshift of the ICs
-h    = 0.6731
+input_file_name  = args['input_file']
+output_file_name = args['output_file']
 
 # Load data from regular CAMB for modification
 # MUSIC will be run twice for the mixed case: 
@@ -22,7 +24,7 @@ data_CAMB = np.loadtxt('example_CAMB_transfer_out.dat') # Example CAMB output of
 
 # Data from axionCAMB
 data_no_axions = np.loadtxt('/home/r/rbond/alague/axionCAMB/output/LCDM_z50_transfer_out.dat')
-data_axionCAMB = np.loadtxt('/home/r/rbond/alague/axionCAMB/output/1_27_10_z50_transfer_out.dat')
+data_axionCAMB = np.loadtxt(input_file_name)
 
 # Calculate transfer functions
 k     = data_axionCAMB[:,0]
@@ -49,8 +51,7 @@ modified_output_axions[:,10] *= factor
 modified_output_axions[:,11]  = factor * modified_output_axions[:,10]
 modified_output_axions[:,12] *= factor
 
-np.savetxt('music-update/music/saving_camb_with_numpy_axions_velocity.dat', 
-           modified_output_axions, delimiter='\t')
+np.savetxt(output_file_name + '_axions.dat', modified_output_axions, delimiter='\t')
 
 
 ### CDM ###
@@ -60,4 +61,4 @@ modified_output_cdm[:,6]  = mixed_transfer_total(data_CAMB[:,0])
 modified_output_cdm[:,2]  = modified_output_cdm[:,1] # usually baryons, now replaced with DM on grid
 
 
-np.savetxt('music-update/music/saving_camb_with_numpy_cdm.dat', modified_output_cdm, delimiter='\t')
+np.savetxt(output_file_name + '_cdm.dat', modified_output_cdm, delimiter='\t')
