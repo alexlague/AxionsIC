@@ -9,12 +9,12 @@ from scipy.interpolate import interp1d
 import argparse
 
 parser = argparse.ArgumentParser(description='Generate CAMB files for MUSIC for mixed axion ICs')
-parser.add_argument('input_file', metavar=filein, help='Input file name from axionCAMB e.g. 1e-27axions_transfer_out.dat')
-parser.add_argument('output_file', metavar=fileout, help='Output file root which leads to file names OUT_cdm.dat and OUT_axions.dat')
+parser.add_argument('input_file', help='Input file name from axionCAMB e.g. 1e-27axions_transfer_out.dat')
+parser.add_argument('output_file', help='Output file root which leads to file names OUT_cdm.dat and OUT_axions.dat')
 args = parser.parse_args()
 
-input_file_name  = args['input_file']
-output_file_name = args['output_file']
+input_file_name  = args.input_file
+output_file_name = args.output_file
 
 # Load data from regular CAMB for modification
 # MUSIC will be run twice for the mixed case: 
@@ -23,7 +23,6 @@ output_file_name = args['output_file']
 data_CAMB = np.loadtxt('example_CAMB_transfer_out.dat') # Example CAMB output of the version compatible with MUSIC
 
 # Data from axionCAMB
-data_no_axions = np.loadtxt('/home/r/rbond/alague/axionCAMB/output/LCDM_z50_transfer_out.dat')
 data_axionCAMB = np.loadtxt(input_file_name)
 
 # Calculate transfer functions
