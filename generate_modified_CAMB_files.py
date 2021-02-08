@@ -45,10 +45,10 @@ modified_output_axions[:,6] = mixed_transfer_total(data_CAMB[:,0])
 
 
 # Use baryons as the placeholder for DM on a grid
-modified_output_axions[:,2]   = modified_output_axions[:,1]
-modified_output_axions[:,10] *= factor
-modified_output_axions[:,11]  = factor * modified_output_axions[:,10]
-modified_output_axions[:,12] *= factor
+modified_output_axions[:,2]   = mixed_transfer_axions(data_CAMB[:,0]) # baryon transfer function
+modified_output_axions[:,10] *= factor # Newtonian-gauge CDM velocity
+modified_output_axions[:,11] = modified_output_axions[:,10] # Newtonian-gauge baryon velocity
+modified_output_axions[:,12] *= factor # relative baryon-CDM velocity (may not be needed)
 
 np.savetxt(output_file_name + '_axions.dat', modified_output_axions, delimiter='\t')
 
@@ -58,6 +58,6 @@ modified_output_cdm       = data_CAMB.copy()
 modified_output_cdm[:,1]  = mixed_transfer_cdm(data_CAMB[:,0])
 modified_output_cdm[:,6]  = mixed_transfer_total(data_CAMB[:,0])
 modified_output_cdm[:,2]  = modified_output_cdm[:,1] # usually baryons, now replaced with DM on grid
-
+modified_output_cdm[:,11] = modified_output_cdm[:,10] # same as above but for velocity
 
 np.savetxt(output_file_name + '_cdm.dat', modified_output_cdm, delimiter='\t')
